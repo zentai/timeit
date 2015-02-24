@@ -19,7 +19,7 @@ class Timer(object):
         self._target_working_sec = 9 * 60 * 60 # 9 hour
 
     def _initial(self):
-        key = "%s" % strftime("%Y-%m-%d")
+        key = "%s.txt" % strftime("%Y-%m-%d")
         if not os.path.exists(key):
             self._touch(key)
         return key
