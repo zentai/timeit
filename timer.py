@@ -2,14 +2,16 @@ from time import strftime
 import time
 import os
 import datetime
+from datetime import timedelta
 import sys
 
-def to_min(sec):
-    return int(sec/60)
-
 def to_hour(sec):
-    return int(sec/60/60)
+    return get_time(sec)
 
+def get_time(second):
+    sec = timedelta(seconds=second)
+    d = datetime.datetime(1,1,1) + sec
+    return "%dh %dm" % (d.hour, d.minute)
 
 class Timer(object):
 
@@ -31,7 +33,7 @@ class Timer(object):
     def timeit(self, desc):
         log = self._gen_log(desc)
         self._save(self._key, log)
-        self._console(log)
+        self.report()
 
     def _gen_log(self, desc):
         return "%s, %s" % (strftime("%Y%m%d %H:%M:%S"), desc)
@@ -50,12 +52,10 @@ class Timer(object):
         working_sec = self._calc(raw)
         self._console("")
         self._console("========== Summary ===========")
-        count_down_min = to_min(self._target_working_sec - working_sec)
-        count_down_hour = to_hour(self._target_working_sec - working_sec)
-        self._console("Countdown minutes: %s hr (%s min)" % (count_down_hour, count_down_min))
+        self._console("Countdown: %s (%s)" % (to_hour(self._target_working_sec - working_sec), to_hour(self._target_working_sec)))
+        self._console("Current  : %s" % to_hour(working_sec))
         self._console("")
-        self._console("Target working minutes: %s hr (%s min)" % (to_hour(self._target_working_sec), to_min(self._target_working_sec)))
-        self._console("Current working minutes: %s hr (%s min)" % (to_hour(working_sec), to_min(working_sec)))
+        self._print_raw(raw)
 
 
     def _load(self, fname):
@@ -67,7 +67,6 @@ class Timer(object):
     def _calc(self, raw):
         composite_list = [raw[x:x+2] for x in range(0, len(raw),2)]
         working_sec = 0
-        self._print_raw(raw)
         for come_in, go_out in composite_list:
             sec = self._timestamp(go_out) - self._timestamp(come_in)
             working_sec += sec
@@ -88,6 +87,6 @@ if __name__ == '__main__':
     t = Timer()
     argv = sys.argv
     if len(argv) == 1:
-        t.report()    
+        t.report()
     if len(argv) >= 2:
         t.timeit(" ".join(argv[1:]))
