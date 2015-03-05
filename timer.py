@@ -13,6 +13,11 @@ def get_time(second):
     d = datetime.datetime(1,1,1) + sec
     return "%dh %dm" % (d.hour, d.minute)
 
+def get_datetime(second):
+    sec = timedelta(seconds=second)
+    return (datetime.datetime.now() + sec).strftime("%Y%m%d %H:%M:%S")
+
+
 class Timer(object):
 
 
@@ -52,8 +57,9 @@ class Timer(object):
         working_sec = self._calc(raw)
         self._console("")
         self._console("========== Summary ===========")
-        self._console("Countdown: %s (%s)" % (to_hour(self._target_working_sec - working_sec), to_hour(self._target_working_sec)))
-        self._console("Current  : %s" % to_hour(working_sec))
+        self._console("leave at : %s" % (get_datetime(self._target_working_sec - working_sec)))
+        self._console("Countdown: %s" % (to_hour(self._target_working_sec - working_sec)))
+        self._console("Working  : %s" % to_hour(working_sec))
         self._console("")
         self._print_raw(raw)
 
