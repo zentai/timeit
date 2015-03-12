@@ -9,6 +9,8 @@ def to_hour(sec):
     return get_time(sec)
 
 def get_time(second):
+    if second < 0:
+        second = 0
     sec = timedelta(seconds=second)
     d = datetime.datetime(1,1,1) + sec
     return "%dh %dm" % (d.hour, d.minute)
