@@ -76,14 +76,27 @@ class Timer(object):
         composite_list = [raw[x:x+2] for x in range(0, len(raw),2)]
         working_sec = 0
         for come_in, go_out in composite_list:
-            sec = self._timestamp(go_out) - self._timestamp(come_in)
+            sec = self._spend_time(come_in, go_out)
             working_sec += sec
         return working_sec
 
+        def _spend_time(self, start_ts, end_ts):
+            if not start_ts or not end_ts:
+                return
+            return self._timestamp(end_ts) - self._timestamp(start_ts)
+
     def _print_raw(self, raw):
         self._console("========== RAW data ===========")
+        prev_item = None
         for idx, item in enumerate(raw, start=0):
-            self._console("[%s] %s.) %s" % ("*" if idx % 2 == 0 else " ", idx, item))
+            spend_min = self._to_min(self._spend_time(prev_item, item)) if idx % 2 == 0 and idx != 0 else "  "
+            self._console("[%s] %s.) %s" % (spend_min, idx, item))
+            prev_item = item
+
+    def _to_min(self, second):
+        if not second:
+            return 0
+        return int(second/60)
 
     def _timestamp(self, line):
         time_str = line.split(',')[0]
