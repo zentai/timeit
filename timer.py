@@ -80,10 +80,10 @@ class Timer(object):
             working_sec += sec
         return working_sec
 
-        def _spend_time(self, start_ts, end_ts):
-            if not start_ts or not end_ts:
-                return
-            return self._timestamp(end_ts) - self._timestamp(start_ts)
+    def _spend_time(self, start_ts, end_ts):
+        if not start_ts or not end_ts:
+            return
+        return self._timestamp(end_ts) - self._timestamp(start_ts)
 
     def _print_raw(self, raw):
         self._console("========== RAW data ===========")
