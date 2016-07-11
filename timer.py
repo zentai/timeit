@@ -23,8 +23,11 @@ def get_datetime(second):
 class Timer(object):
 
 
-    def __init__(self):
-        self._key = self._initial()
+    def __init__(self, key=None):
+        if not key:
+            self._key = self._initial()
+        else:
+            self._key = key
         self._target_working_sec = 9 * 60 * 60 # 9 hour
 
     def _initial(self):
@@ -104,10 +107,20 @@ class Timer(object):
 
 
 
+def is_logfile(filename):
+    return os.path.exists(filename)
+
+
+
 if __name__ == '__main__':
     t = Timer()
     argv = sys.argv
     if len(argv) == 1:
         t.report()
     if len(argv) >= 2:
-        t.timeit(" ".join(argv[1:]))
+        text = " ".join(argv[1:])
+        if is_logfile(text):
+            t = Timer(text)
+            t.report()
+        else:
+            t.timeit(text)
